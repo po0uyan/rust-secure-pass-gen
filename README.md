@@ -63,6 +63,20 @@ unwired-hungrily-spirited-encrypt
 Hit Enter to exit
 ```
 
+## Security Perspective
+
+### Data Protection
+
+- Secrecy crate has been used to `Zeroise` the memory. This crates guarantees that the memory will be freed.
+- It has been made sure that Secret types won't log anywhere by chance as they are protected by Secret type.
+- Running this program on a non-tty environment has been prohibited to prevent logging non-deliberately or letting malicious softwares sniff the generated password.
+- The output will be dismissed and overwritten after a timeout or any SIG from the OS.
+
+### Password Generation
+
+- Arbitrary sampling from uniform distribution has been used in random strategy to mitigate the timing attack.
+- EFF diceware list of words embedded in the binary to preserve integrity.
+
 ## Development Perspective
 
 ### Project Structure
@@ -74,15 +88,6 @@ There is an `assets` directory which holds the EFF word list for diceware genera
 ### Testing
 
 - Run tests by running `cargo test` to run through the test cases. 
-
-## Security Perspective
-
-### Data Protection
-
-- Secrecy crate has been used to `Zeroise` the memory. This crates guarantees that the memory will be freed.\
-- It has been made sure that Secret types won't log anywhere by chance as they are protected by Secret type.
-- Running this program on a non-tty environment has been prohibited to prevent logging non-deliberately or letting malicious softwares sniff the generated password.
-- The output will be dismissed and overwritten after a timeout or any SIG from the OS.
 
 ### Vulnerabilities and Mitigation
 

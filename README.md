@@ -106,5 +106,5 @@ MIT License.
 
 ## Contribution
 
-Feel free to enhance this project by forking it and create a PR.
-Leave a start if you find this useful.
+Feel free to enhance this project by forking it and creating PRs.\
+Leave a star if you find it useful.

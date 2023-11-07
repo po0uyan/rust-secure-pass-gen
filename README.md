@@ -71,22 +71,9 @@ This Project has three parts including `main`,`cli`,`password_generator`.
 Strategy pattern has been used in `password_generator`, to generate `Random`,`Memorable`, and `Pin` passwords.
 There is an `assets` directory which holds the EFF word list for diceware generation.
 
-### Dependencies
-
-List the main dependencies and their versions used in this project is as follows.
-
-```
-atty0.2.14 # For NON TTY env detection
-secrecy0.8.0 # For Zeroizing and prevent logging important memory parts
-clap4.4.7 # For Cli argument management and help
-console0.15.7 # Managing Console STDOUT and STDERR
-ctrlc3.4.1 # To handle Process Signals 
-rand0.8.5 # To sample from different probabilities
-```
-
 ### Testing
 
-There are a small number of tests on different password strategies. More tests should be implemented in the future. Including security tests.
+- Run tests by running `cargo test` to run through the test cases. 
 
 ## Security Perspective
 
@@ -104,10 +91,15 @@ This code is not using `mlock` and/or `mprotect` to prevent the os from dumping 
 ## Todo
 
 - [ ] Write more tests with more coverage.
-- [ ] Use Boler along with a fuzzy engine to produce arbitrary configs for pass generators.
+- [ ] More tests should be implemented in the future. Including security tests.
+- [ ] Use Bolero along with a fuzzy engine to produce arbitrary configs for pass generators.
 - [ ] Implement `mlock/mprotect` to protect the memory.
-- [ ] ...
 
 ## License
 
 MIT License.
+
+## Contribution
+
+Feel free to enhance this project by forking it and create a PR.
+Leave a start if you find this useful.

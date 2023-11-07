@@ -69,7 +69,7 @@ Hit Enter to exit
 
 - Secrecy crate has been used to `Zeroise` the memory. This crates guarantees that the memory will be freed.
 - It has been made sure that Secret types won't log anywhere by chance as they are protected by Secret type.
-- Running this program on a non-tty environment has been prohibited to prevent logging non-deliberately or letting malicious softwares sniff the generated password.
+- Running this program on a `non-tty` environment has been prohibited to prevent logging non-deliberately or letting malicious softwares sniff the generated password.
 - The output will be dismissed and overwritten after a timeout or any SIG from the OS.
 
 ### Password Generation

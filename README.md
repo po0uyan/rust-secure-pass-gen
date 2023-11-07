@@ -3,8 +3,8 @@
 ## Overview
 
 This Project is a secure CLI password generator written in rust.\
-This generates a secure password with three different strategies including `Random`, `Memorable words`, and `Pin Number` along with shannon entropy and an intuitive password strength.
-Lots of other configurations can be passed through to make it harder to crack. See below for more.
+This generates a secure password with three different strategies including `Random`, `Memorable words`, and `Pin Number` along with shannon entropy and an intuitive password strength.\
+Lots of other configurations can be passed through to make it harder to be cracked. See below for more info.
 
 ## Build and Run Instructions
 

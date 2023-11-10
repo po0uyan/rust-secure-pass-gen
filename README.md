@@ -12,13 +12,13 @@ Lots of other configurations can be passed through to make it harder to be crack
 
 - First make sure you have the rust toolchain installed using rustup.
 - You can build the binary by running `cargo build --release` to build the project.
-- You can run the project by running the output binary `./target/release/pass-gen`.
-- Optional: You can copy and paste `./target/release/pass-gen` into your `/usr/local/bin/` if you are on the UNIX based environment. Then just run `pass-gen`.
+- You can run the project by running the output binary `./target/release/spg`.
+- Optional: You can copy and paste `./target/release/spg` into your `/usr/local/bin/` if you are on the UNIX based environment. Then just run `spg`.
 
 ### Usage Instructions
 
 ```bash
-Usage: pass-gen [OPTIONS]
+Usage: spg [OPTIONS]
 
 Options:
   -l, --length <LENGTH>
@@ -45,7 +45,7 @@ Options:
           Print version
 ```
 
-An example output would be as follows for `pass-gen -n -s -c -l 19` prompt:
+An example output would be as follows for `spg -n -s -c -l 19` prompt:
 
 ```
 
@@ -55,7 +55,7 @@ z67r81kNk*v~&ud5gjT
 Hit Enter to exit
 ```
 
-Or we can have a memorable password with 4 words in it by running `pass-gen -g memorable -w 4` prompt:
+Or we can have a memorable password with 4 words in it by running `spg -g memorable -w 4` prompt:
 
 ```
 Shannon entropy: 51.70

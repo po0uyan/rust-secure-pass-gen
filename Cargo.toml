@@ -1,8 +1,8 @@
 [package]
-name = "pass-gen"
+name = "spg"
 version = "0.1.0"
 edition = "2021"
-description="secure rust cli password generator"
+description="secure password generator over CLI"
 authors=["pouyan shalbafan <info@pouyan.me>"]
 readme = "README.md"
 repository = "https://github.com/po0uyan/rust-secure-pass-gen"

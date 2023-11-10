@@ -2,8 +2,14 @@
 name = "pass-gen"
 version = "0.1.0"
 edition = "2021"
-description="secure cli password generator"
+description="secure rust cli password generator"
 authors=["pouyan shalbafan <info@pouyan.me>"]
+readme = "README.md"
+repository = "https://github.com/po0uyan/rust-secure-pass-gen"
+license = "MIT"
+license-file = "LICENSE"
+keywords = ["password generator", "secure password generator", "rust cli password generator", "cli secure password generator",  "rust password generator"]
+categories = ["command-line-utilities","cryptography"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

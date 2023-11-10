@@ -6,7 +6,6 @@ description="secure rust cli password generator"
 authors=["pouyan shalbafan <info@pouyan.me>"]
 readme = "README.md"
 repository = "https://github.com/po0uyan/rust-secure-pass-gen"
-license = "MIT"
 license-file = "LICENSE"
 keywords = ["password generator", "secure password generator", "rust cli password generator", "cli secure password generator",  "rust password generator"]
 categories = ["command-line-utilities","cryptography"]

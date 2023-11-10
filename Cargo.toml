@@ -7,7 +7,7 @@ authors=["pouyan shalbafan <info@pouyan.me>"]
 readme = "README.md"
 repository = "https://github.com/po0uyan/rust-secure-pass-gen"
 license-file = "LICENSE"
-keywords = ["password generator", "secure password generator", "rust cli password generator", "cli secure password generator",  "rust password generator"]
+keywords = ["password", "generator", "secure", "cli", "passgen"]
 categories = ["command-line-utilities","cryptography"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

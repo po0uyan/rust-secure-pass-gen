@@ -1,0 +1,148 @@
+name: PR Checks & Release (Crates.io & GitHub)
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+      fail-fast: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Format check
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Build and Test
+        run: |
+          cargo build --verbose
+          cargo test --verbose
+
+  release:
+    name: Release on successful tests and merge
+    needs: test
+    if: github.event_name == 'push'  # Runs only when merged into main
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    # Merging several PRs in quick succession starts one release job per
+    # merge; queue them so they don't race each other pushing the bump.
+    concurrency:
+      group: release-main
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # A queued release job may start on a commit that is no longer the tip.
+      # Sync to the real tip; if the tip is already a version-bump commit
+      # there is nothing left to release.
+      - name: Sync with main and check for unreleased work
+        id: gate
+        run: |
+          git pull --rebase origin main
+          if git log -1 --pretty=%B | grep -q '\[skip ci\]'; then
+            echo "Tip is already a release commit; nothing to release."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Rust
+        if: steps.gate.outputs.skip != 'true'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check package version
+        if: steps.gate.outputs.skip != 'true'
+        run: echo "VERSION=$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[0].version')" >> $GITHUB_ENV
+
+      - name: Determine version bump from PR labels
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION_PART="patch"
+          PR_NUMBER=$(git log --grep='Merge pull request #' -1 --pretty=%B | grep -oE 'Merge pull request #[0-9]+' | awk '{print $4}' | tr -d '#' || true)
+          if [ -n "$PR_NUMBER" ]; then
+            LABELS=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" --jq 'map(.name) | join(" ")')
+            echo "PR #$PR_NUMBER labels: $LABELS"
+            if echo "$LABELS" | grep -iq "major"; then
+              VERSION_PART="major"
+            elif echo "$LABELS" | grep -iq "minor"; then
+              VERSION_PART="minor"
+            fi
+          fi
+          echo "Selected version bump: $VERSION_PART"
+          echo "VERSION_PART=$VERSION_PART" >> $GITHUB_ENV
+
+      - name: Determine new version
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          if [[ "${{ env.VERSION_PART }}" == "major" ]]; then
+            NEW_VERSION=$(echo "${{ env.VERSION }}" | awk -F. -v OFS=. '{$1 += 1 ; $2=0; $3=0; print}')
+          elif [[ "${{ env.VERSION_PART }}" == "minor" ]]; then
+            NEW_VERSION=$(echo "${{ env.VERSION }}" | awk -F. -v OFS=. '{$2 += 1 ; $3=0; print}')
+          else
+            NEW_VERSION=$(echo "${{ env.VERSION }}" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+          fi
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Update Cargo.toml and Cargo.lock with new version
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          sed -i 's/^version = "[0-9]\+\.[0-9]\+\.[0-9]\+"/version = "${{ env.NEW_VERSION }}"/' Cargo.toml
+          cargo check --quiet  # refresh Cargo.lock
+
+      - name: Commit and push new version
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Cargo.toml Cargo.lock
+          git commit -m "Bumping version to ${{ env.NEW_VERSION }} for release 🚀 [skip ci]"
+          git push origin main
+
+      - name: Tag version and push
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          git tag "v${{ env.NEW_VERSION }}"
+          git push origin "v${{ env.NEW_VERSION }}"
+
+      - name: Publish to Crates.io
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+        run: cargo publish --token $CARGO_REGISTRY_TOKEN
+
+      - name: Create GitHub Release
+        if: steps.gate.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          tag_name: v${{ env.NEW_VERSION }}
+          name: Release v${{ env.NEW_VERSION }}
+          body: "🚀 Automated release triggered by successful tests on main.\n\n📦 **[View on Crates.io](https://crates.io/crates/spg/${{ env.NEW_VERSION }})**"
+          draft: false
+          prerelease: false

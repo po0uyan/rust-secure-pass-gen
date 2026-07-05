@@ -1,0 +1,48 @@
+name: Enforce PR Labels
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - labeled
+      - unlabeled
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  check-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Labels
+        env:
+          # Labels come straight from the event payload — no API call, no
+          # secret to expire.
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
+        run: |
+          REQUIRED_LABELS=("minor" "major" "patch")
+
+          for label in "${REQUIRED_LABELS[@]}"; do
+            if echo " $LABELS " | grep -q " $label "; then
+              echo "✅ PR has a valid label ($label)."
+              exit 0
+            fi
+          done
+
+          echo "❌ ERROR: PR must have one of the following labels: minor, major, patch."
+          exit 1
+
+      - name: Auto-Comment on PR if Missing Labels
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          COMMENT="⚠️ **PR Validation Failed**: This PR is missing a required label. Please add one of: **minor, major, patch**."
+
+          gh api "repos/$REPO/issues/$PR_NUMBER/comments" -f body="$COMMENT"

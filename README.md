@@ -6,6 +6,8 @@ This Project is a secure CLI password generator written in rust.\
 This generates a secure password with three different strategies including `Random`, `Memorable words`, and `Pin Number` along with shannon entropy and an intuitive password strength.\
 Lots of other configurations can be passed through to make it harder to be cracked. See below for more info.
 
+Generated passwords are held in [memsafe](https://crates.io/crates/memsafe)-protected memory: locked to RAM so they can't be swapped to disk, excluded from core dumps on Linux, sealed against access between uses, and wiped on drop. Working buffers used during generation are volatile-wiped as soon as the password reaches protected memory.
+
 ## Build and Run Instructions
 
 ### Build

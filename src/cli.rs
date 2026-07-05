@@ -1,6 +1,5 @@
-use std::{process, sync::mpsc::channel, thread, time::Duration};
+use std::{io::IsTerminal, process, sync::mpsc::channel, thread, time::Duration};
 
-use atty::Stream;
 use clap::Parser;
 use console::Term;
 const SECURITY_TIMEOUT: u64 = 7;
@@ -120,8 +119,10 @@ where
 }
 
 pub fn fail_on_non_tty(insecure_mode: bool) {
-    if atty::isnt(Stream::Stdout) && !insecure_mode {
-        eprintln!("This program is not allowed to be run on non tty environments.\nTo do so you need to set the insecure flag --insecure-mode .");
+    if !std::io::stdout().is_terminal() && !insecure_mode {
+        eprintln!(
+            "This program is not allowed to be run on non tty environments.\nTo do so you need to set the insecure flag --insecure-mode ."
+        );
         process::exit(1);
     }
 }

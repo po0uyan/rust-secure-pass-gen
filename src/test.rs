@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
     use crate::{
+        PasswordGeneratorConfig,
         password_generator::{
-            base::{wipe, PassGeneratorStrategy, SafePassword},
+            base::{PassGeneratorStrategy, SafePassword, wipe},
             memorable::MemorablePassGenerator,
             random::RandomPassGenerator,
         },
-        PasswordGeneratorConfig,
     };
 
     fn config(gen_type: &str) -> PasswordGeneratorConfig {

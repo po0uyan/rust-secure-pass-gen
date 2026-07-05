@@ -1,7 +1,8 @@
 [package]
 name = "spg"
 version = "0.2.0"
-edition = "2021"
+edition = "2024"
+rust-version = "1.85"
 description="secure password generator over CLI"
 authors=["pouyan shalbafan <info@pouyan.me>"]
 readme = "README.md"
@@ -13,7 +14,6 @@ categories = ["command-line-utilities","cryptography"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-atty = "0.2.14"
 clap = { version = "4.4.7", features = ["derive"] }
 console = "0.15.7"
 ctrlc = "3.4.1"

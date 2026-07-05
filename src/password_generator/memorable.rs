@@ -1,11 +1,11 @@
 use rand::{distributions::Uniform, prelude::*, thread_rng};
 
 use crate::{
-    word::{HashWords, WordList},
     PasswordGeneratorConfig,
+    word::{HashWords, WordList},
 };
 
-use super::base::{wipe, PassGeneratorStrategy};
+use super::base::{PassGeneratorStrategy, wipe};
 
 pub struct MemorablePassGenerator {
     words_map: HashWords,

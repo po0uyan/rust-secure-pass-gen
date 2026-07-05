@@ -13,6 +13,7 @@ pub struct PasswordGeneratorConfig {
         help = "Password length to be generated",
         allow_negative_numbers(false),
         requires_ifs([("random", "gen_type"),("pin", "gen_type")]),
+        value_parser(clap::value_parser!(u16).range(1..=4096)),
         default_value_t = 8
     )]
     pub length: u16,
@@ -75,6 +76,7 @@ pub struct PasswordGeneratorConfig {
         long,
         help = "The number of words included in memorable password",
         allow_negative_numbers(false),
+        value_parser(clap::value_parser!(u16).range(1..=256)),
         default_value_t = 5,
         requires_if("memorable", "gen_type")
     )]
@@ -117,7 +119,7 @@ where
     cleanup();
 }
 
-pub fn fail_on_non_tty(insecure_mode: bool) -> () {
+pub fn fail_on_non_tty(insecure_mode: bool) {
     if atty::isnt(Stream::Stdout) && !insecure_mode {
         eprintln!("This program is not allowed to be run on non tty environments.\nTo do so you need to set the insecure flag --insecure-mode .");
         process::exit(1);

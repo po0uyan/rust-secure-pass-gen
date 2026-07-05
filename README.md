@@ -94,14 +94,14 @@ There is an `assets` directory which holds the EFF word list for diceware genera
 
 ### Vulnerabilities and Mitigation
 
-This code is not using `mlock` and/or `mprotect` to prevent the os from dumping the data into disk on various scenarios on OS.
+Generated passwords are protected with `mlock`/`mprotect` (via [memsafe](https://crates.io/crates/memsafe)): the page holding the password can't be swapped to disk, is excluded from core dumps on Linux, and is sealed between accesses. Working buffers used during generation are volatile-wiped once the password reaches protected memory. Limits worth knowing: hibernation images and attackers with your own or higher privileges (e.g. a debugger) are out of scope — see memsafe's threat model for the full list.
 
 ## Todo
 
 - [ ] Write more tests with more coverage.
-- [ ] More tests should be implemented in the future. Including security tests.
+- [x] More tests should be implemented in the future. Including security tests.
 - [ ] Use Bolero along with a fuzzy engine to produce arbitrary configs for pass generators.
-- [ ] Implement `mlock/mprotect` to protect the memory.
+- [x] Implement `mlock/mprotect` to protect the memory. (done via [memsafe](https://crates.io/crates/memsafe))
 
 ## License
 

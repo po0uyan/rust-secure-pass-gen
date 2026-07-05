@@ -2,8 +2,8 @@ mod cli;
 mod password_generator;
 mod test;
 mod word;
-use crate::cli::cleanup_listener_on_signal_or_timeout;
 pub use crate::cli::PasswordGeneratorConfig;
+use crate::cli::cleanup_listener_on_signal_or_timeout;
 use clap::Parser;
 use cli::fail_on_non_tty;
 use password_generator::{

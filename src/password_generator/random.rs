@@ -1,4 +1,4 @@
-use rand::{distributions::Uniform, prelude::Distribution, thread_rng, Rng};
+use rand::{Rng, distributions::Uniform, prelude::Distribution, thread_rng};
 
 use crate::PasswordGeneratorConfig;
 
